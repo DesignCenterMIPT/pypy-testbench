@@ -2,11 +2,8 @@ PYTHON=python3
 PYPY=pypy
 SOURCE=source
 CODE=brainfuck
-PYPY_SOURCE_REPO=https://foss.heptapod.net/pypy/pypy
-TRANSLETOR_PATH=pypy/rpython/translator/goal
-RPYTHON=pypy/rpython/bin/rpython
-APT=apt
-#PWD=`pwd`
+RPYTHON_DIR=$(PWD)/../pypy/rpython
+RPYTHON=$(RPYTHON_DIR)/bin/rpython
 
 python_only:
 	$(PYTHON) $(SOURCE)/python_only.py $(CODE)/first_brainfuck.b
@@ -57,29 +54,29 @@ diff_dir:
 clear_diff: 
 	rm -rfd $(PWD)/tmp/withoutjit/ $(PWD)/tmp/withjit
 
-viewcode: export PYTHONPATH=$(PWD)/pypy
+viewcode: export PYTHONPATH=$(PWD)/../pypy
 viewcode: exec_log_jit_pypy
-	pypy ./pypy/rpython/jit/backend/tool/viewcode.py ./build/l.log
+	pypy $(RPYTHON_DIR)/jit/backend/tool/viewcode.py ./build/l.log
 
 play_log: export PYPYLOG=jit-backend-dump:l.log
 play_log: 
 	cd build && ./log_jit_pypy-c ../brainfuck/mandel.b
 
-viewcode: export PYTHONPATH=$(PWD)/pypy
+viewcode: export PYTHONPATH=$(PWD)/../pypy
 viewcode: play_log
-	pypy ./pypy/rpython/jit/backend/tool/viewcode.py ./build/l.log
+	pypy $(RPYTHON_DIR)/jit/backend/tool/viewcode.py ./build/l.log
 
 clean_viewcode:
 	rm -f log build/log
 
-funcall: export PYTHONPATH=$(PWD)/pypy
+funcall: export PYTHONPATH=$(PWD)/../pypy
 funcall: export LIBPATH=$(PWD)/source/csource/hlib.so	
 funcall:
 	pypy ./source/csource/funcall.py
 
-viewcode_withfun: export PYTHONPATH=$(PWD)/pypy
+viewcode_withfun: export PYTHONPATH=$(PWD)/../pypy
 viewcode_withfun: play_hellofun
-	pypy ./pypy/rpython/jit/backend/tool/viewcode.py ./build/l.log	
+	pypy $(RPYTHON_DIR)/jit/backend/tool/viewcode.py ./build/l.log	
 
 play_hellofun: export PYPYLOG=jit-backend-dump:l.log
 play_hellofun: fun_jit_pypy
