@@ -10,6 +10,7 @@ from rpython.rtyper.lltypesystem import rffi, lltype
 from rpython.rtyper.lltypesystem.lltype import FuncType, Ptr
 
 
+
 try:
     from rpython.rlib.jit import JitDriver, purefunction
 except ImportError:
@@ -93,17 +94,14 @@ initfunctype = lltype.Ptr(lltype.FuncType([], lltype.Void))
 
 
 class Tape(object):
-   
     
-   
     def  func_caller(self):
-        print('Try to run external function')
         self.helloFunc()
 
     def __init__(self):
         self.thetape = [0]
         self.position = 0
-        ll_libname = rffi.str2charp('./source/csource/hlib.so')
+        ll_libname = rffi.str2charp('../source/csource/hlib.so')
         self.dll = rdynload.dlopen(ll_libname, rdynload._dlopen_default_mode())
         lltype.free(ll_libname, flavor='raw')
         initptr = rdynload.dlsym(self.dll, 'hello')
@@ -112,19 +110,14 @@ class Tape(object):
         #self.func_ptr =  return_caller(helloFunc)
         #return_caller(helloFunc)
         self.helloFunc()
-        print('Tape init finish')
         
     def get(self):
-        self.func_caller()
         return self.thetape[self.position]
     def set(self, val):
-        self.func_caller()
         self.thetape[self.position] = val
     def inc(self):
-        self.func_caller()
         self.thetape[self.position] += 1
     def dec(self):
-        self.func_caller()
         self.thetape[self.position] -= 1
     def advance(self):
         self.position += 1
@@ -134,7 +127,6 @@ class Tape(object):
         self.position -= 1
 
     def hello(self):
-		#print('Is lib exists?', exists(lib_path))
         self.func_caller()
 
 def parse(program):

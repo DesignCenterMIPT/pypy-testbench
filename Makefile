@@ -54,12 +54,8 @@ diff_dir:
 clear_diff: 
 	rm -rfd $(PWD)/tmp/withoutjit/ $(PWD)/tmp/withjit
 
-viewcode: export PYTHONPATH=$(PWD)/../pypy
-viewcode: exec_log_jit_pypy
-	pypy $(RPYTHON_DIR)/jit/backend/tool/viewcode.py ./build/l.log
-
 play_log: export PYPYLOG=jit-backend-dump:l.log
-play_log: 
+play_log: log_jit_pypy 
 	cd build && ./log_jit_pypy-c ../brainfuck/mandel.b
 
 viewcode: export PYTHONPATH=$(PWD)/../pypy
@@ -79,11 +75,13 @@ viewcode_withfun: play_hellofun
 	pypy $(RPYTHON_DIR)/jit/backend/tool/viewcode.py ./build/l.log	
 
 play_hellofun: export PYPYLOG=jit-backend-dump:l.log
+play_hellofun: export PYTHONPATH=$(PWD)/../pypy
 play_hellofun: fun_jit_pypy
-	cd build && ./fun_jit_pypy-c ../brainfuck/hello.b
+	cd build && ./fun_jit_pypy-c ../brainfuck/mandel.b
 
 fun_jit_pypy: 
 fun_jit_pypy:
 	mkdir -p build
 	$(PYPY) $(RPYTHON) --opt=jit $(SOURCE)/fun_jit_pypy.py
 	mv -f fun_jit_pypy-c build
+
