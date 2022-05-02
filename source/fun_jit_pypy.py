@@ -109,7 +109,7 @@ class Tape(object):
         self.helloFunc = rffi.cast(initfunctype, initptr)
         #self.func_ptr =  return_caller(helloFunc)
         #return_caller(helloFunc)
-        self.helloFunc()
+		#self.helloFunc()
         
     def get(self):
         return self.thetape[self.position]
