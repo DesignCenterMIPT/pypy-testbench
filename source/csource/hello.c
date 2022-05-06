@@ -6,6 +6,6 @@ void hello() {
 	printf("Hello, world\n");
 }
 
-void printMyInt(struct MyInt v) {
+void printMyInt(struct MyInt* v) {
 	printf("MyInt{Int=%d}", v.Int);
 }

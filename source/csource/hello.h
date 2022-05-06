@@ -7,6 +7,6 @@ struct MyInt {
 
 void hello();
 
-void printMyInt(struct MyInt v);
+void printMyInt(struct MyInt* v);
 
 #endif
