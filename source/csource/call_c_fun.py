@@ -12,3 +12,7 @@ func_void_void = lltype.Ptr(lltype.FuncType([], lltype.Void))
 helloFunc = rffi.cast(func_void_void, initptr)
 
 helloFunc()
+
+initptr = rdynload.dlsym(dll, 'hello')
+func_void_void = lltype.Ptr(lltype.FuncType([], lltype.Void))
+helloFunc = rffi.cast(func_void_void, initptr)

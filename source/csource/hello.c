@@ -7,5 +7,5 @@ void hello() {
 }
 
 void printMyInt(struct MyInt* v) {
-	printf("MyInt{Int=%d}", v.Int);
+	printf("MyInt{Int=%d}", v -> Int);
 }
