@@ -1,6 +1,12 @@
 #ifndef HELLO_LIB
 #define HELLO_LIB
 
-void hello(int i)
+struct MyInt {
+	int Int;
+};
+
+void hello();
+
+void printMyInt(struct MyInt v);
 
 #endif
