@@ -2,11 +2,13 @@
 #define HELLO_LIB
 
 struct MyInt {
-	int Int;
+	int Int; 
 };
 
 void hello();
 
 void printMyInt(struct MyInt* v);
+
+int return42();
 
 #endif

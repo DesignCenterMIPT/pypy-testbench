@@ -68,14 +68,14 @@ clean_viewcode:
 funcall: export PYTHONPATH=$(PWD)/../pypy
 funcall: export LIBPATH=$(PWD)/source/csource/hlib.so	
 funcall:
-	pypy ./source/csource/funcall.py
+	pypy ./source/csource/call_c_fun.py
 
 viewcode_withfun: export PYTHONPATH=$(PWD)/../pypy
 viewcode_withfun: play_hellofun
 	pypy $(RPYTHON_DIR)/jit/backend/tool/viewcode.py ./build/l.log	
 
-play_hellofun: export PYPYLOG=jit-backend-dump:l.log
 play_hellofun: export PYTHONPATH=$(PWD)/../pypy
+play_hellofun: export PYPYLOG=jit-backend-dump:l.log
 play_hellofun: fun_jit_pypy
 	cd build && ./fun_jit_pypy-c ../brainfuck/mandel.b
 
