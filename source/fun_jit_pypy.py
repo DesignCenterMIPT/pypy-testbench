@@ -99,16 +99,25 @@ initfunctype = lltype.Ptr(lltype.FuncType([], lltype.Void))
 
 func_int_void = lltype.Ptr(lltype.FuncType([], lltype.Signed))
 
-IntStruct = lltype.GcStruct('MyInt', ('Int', lltype.Signed))
+#
+# FIXME: resolve pypy-world MyStruct with C-world MyStruct binding issue
+# by using non-GC structure and immortal malloc() later
+#
+# IntStruct = lltype.GcStruct('MyInt', ('Int', lltype.Signed))
+IntStruct = lltype.Struct('MyInt', ('Int', lltype.Signed))
 func_void_MyInt = lltype.Ptr(lltype.FuncType([lltype.Ptr(IntStruct)], lltype.Void))
 
 class Tape(object):
-	def  func_caller(self):
+	def func_caller(self):
 		self.helloFunc()
 
 	def printer(self, val):
-		pIntStruct = lltype.malloc(IntStruct)
-		print(val, pIntStruct)
+		#
+		# FIXME: resolve pypy-world MyStruct with C-world MyStruct binding issue
+		# by using non-GC structure above and immortal malloc() here
+		# INFO: using explicit flavor='raw' here, because of default 'gc' value
+		#
+		pIntStruct = lltype.malloc(IntStruct, flavor='raw', immortal=True)
 		pIntStruct.Int = val
 		self.printMyInt(pIntStruct) 
 
