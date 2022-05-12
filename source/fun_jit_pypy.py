@@ -9,8 +9,6 @@ from rpython.rlib import rdynload
 from rpython.rtyper.lltypesystem import rffi, lltype
 from rpython.rtyper.lltypesystem.lltype import FuncType, Ptr
 
-
-
 try:
 	from rpython.rlib.jit import JitDriver, purefunction
 except ImportError:
@@ -99,11 +97,6 @@ initfunctype = lltype.Ptr(lltype.FuncType([], lltype.Void))
 
 func_int_void = lltype.Ptr(lltype.FuncType([], lltype.Signed))
 
-#
-# FIXME: resolve pypy-world MyStruct with C-world MyStruct binding issue
-# by using non-GC structure and immortal malloc() later
-#
-# IntStruct = lltype.GcStruct('MyInt', ('Int', lltype.Signed))
 IntStruct = lltype.Struct('MyInt', ('Int', lltype.Signed))
 func_void_MyInt = lltype.Ptr(lltype.FuncType([lltype.Ptr(IntStruct)], lltype.Void))
 
@@ -112,11 +105,6 @@ class Tape(object):
 		self.helloFunc()
 
 	def printer(self, val):
-		#
-		# FIXME: resolve pypy-world MyStruct with C-world MyStruct binding issue
-		# by using non-GC structure above and immortal malloc() here
-		# INFO: using explicit flavor='raw' here, because of default 'gc' value
-		#
 		pIntStruct = lltype.malloc(IntStruct, flavor='raw', immortal=True)
 		pIntStruct.Int = val
 		self.printMyInt(pIntStruct) 
