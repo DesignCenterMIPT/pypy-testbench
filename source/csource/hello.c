@@ -7,8 +7,7 @@ void hello() {
 }
 
 void printMyInt(struct MyInt* v) {
-	printf("pointer = %p\n", v);
-	printf("MyInt{Int=%d}\n", v -> Int);
+    printf("MyInt{Int=%d}\n", v -> Int);
 }
 
 int return42() {
