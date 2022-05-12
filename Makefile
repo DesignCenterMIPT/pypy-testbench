@@ -77,7 +77,11 @@ viewcode_withfun: play_hellofun
 play_hellofun: export PYTHONPATH=$(PWD)/../pypy
 play_hellofun: export PYPYLOG=jit-backend-dump:l.log
 play_hellofun: fun_jit_pypy
-	cd build && ./fun_jit_pypy-c ../brainfuck/mandel.b
+	cd build && ./fun_jit_pypy-c ../brainfuck/hello.b
+
+play_hellofun_alone: export PYPYLOG=jit-backend-dump:l.log
+play_hellofun_alone:
+	cd build && ./fun_jit_pypy-c ../brainfuck/hello.b
 
 fun_jit_pypy: 
 fun_jit_pypy:

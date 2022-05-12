@@ -13,13 +13,24 @@ helloFunc = rffi.cast(func_void_void, initptr)
 
 helloFunc()
 
-initptr = rdynload.dlsym(dll, 'printMyInt')
+printptr = rdynload.dlsym(dll, 'printMyInt')
 # https://rpython.readthedocs.io/en/latest/rtyper.html
 IntStruct = lltype.GcStruct('MyInt', ('Int', lltype.Signed))
 pIntStruct = lltype.malloc(IntStruct)
 pIntStruct.Int = 23
 
+pIntStruct.Int = 123
 func_void_MyInt = lltype.Ptr(lltype.FuncType([lltype.Ptr(IntStruct)], lltype.Void))
-printMyInt = rffi.cast(func_void_MyInt, initptr)
+printMyInt = rffi.cast(func_void_MyInt, printptr)
 
 printMyInt(pIntStruct)
+
+
+rptr = rdynload.dlsym(dll, 'return42')
+# https://rpython.readthedocs.io/en/latest/rtyper.html
+
+func_int_void = lltype.Ptr(lltype.FuncType([], lltype.Signed))
+return42Func = rffi.cast(func_int_void, rptr)
+
+val = return42Func()
+print(val)
