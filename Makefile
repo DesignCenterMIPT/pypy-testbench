@@ -1,5 +1,6 @@
-PYTHON=python3
+PTHON=python3
 PYPY=pypy
+PYPY3=pypy3
 SOURCE=source
 CODE=brainfuck
 RPYTHON_DIR=$(PWD)/../pypy/rpython
@@ -60,7 +61,7 @@ play_log: log_jit_pypy
 
 viewcode: export PYTHONPATH=$(PWD)/../pypy
 viewcode: play_log
-	pypy $(RPYTHON_DIR)/jit/backend/tool/viewcode.py ./build/l.log
+	$(PYPY) $(RPYTHON_DIR)/jit/backend/tool/viewcode.py ./build/l.log
 
 clean_viewcode:
 	rm -f log build/log
@@ -68,11 +69,11 @@ clean_viewcode:
 funcall: export PYTHONPATH=$(PWD)/../pypy
 funcall: export LIBPATH=$(PWD)/source/csource/hlib.so	
 funcall:
-	pypy ./source/csource/call_c_fun.py
+	$(PYPY3) ./source/csource/call_c_fun.py
 
 viewcode_withfun: export PYTHONPATH=$(PWD)/../pypy
 viewcode_withfun: play_hellofun
-	pypy $(RPYTHON_DIR)/jit/backend/tool/viewcode.py ./build/l.log	
+	$(PYPY) $(RPYTHON_DIR)/jit/backend/tool/viewcode.py ./build/l.log	
 
 play_hellofun: export PYTHONPATH=$(PWD)/../pypy
 play_hellofun: export PYPYLOG=jit-backend-dump:l.log
