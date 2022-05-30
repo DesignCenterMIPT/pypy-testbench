@@ -11,24 +11,20 @@ python_only:
 	$(PYTHON) $(SOURCE)/python_only.py $(CODE)/first_brainfuck.b
 
 simple_pypy:
-	mkdir -p build; cd build
-	$(PYPY2) $(RPYTHON) --opt=2 $(SOURCE)/simple_pypy.py
-	cd -
+	mkdir -p build 
+	cd build; $(PYPY2) $(RPYTHON) --opt=2 $(SOURCE)/simple_pypy.py
 
 jit_pypy:
-	mkdir -p build; cd build
-	$(PYPY2) $(RPYTHON) --opt=jit $(SOURCE)/jit_pypy.py
-	cd -
+	mkdir -p build
+	cd build; $(PYPY2) $(RPYTHON) --opt=jit $(SOURCE)/jit_pypy.py
 
 opt_jit_pypy:	
-	mkdir -p build; cd build
-	$(PYPY2) $(RPYTHON) --opt=jit $(SOURCE)/opt_jit_pypy.py
-	cd -
+	mkdir -p build; 
+	cd build; $(PYPY2) $(RPYTHON) --opt=jit $(SOURCE)/opt_jit_pypy.py
 
 log_jit_pypy:	
-	mkdir -p build; cd build
-	$(PYPY2) $(RPYTHON) --opt=jit $(SOURCE)/log_jit_pypy.py
-	cd -
+	mkdir -p build 
+	cd build; $(PYPY2) $(RPYTHON) --opt=jit $(SOURCE)/log_jit_pypy.py
 
 rpython_help:
 	$(PYPY2) $(RPYTHON) --help
@@ -37,17 +33,16 @@ __jit_pypy_with: export PYPY_USESSION_DIR=$(PWD)/tmp/withjit
 __jit_pypy_with: export PYPY_USESSION_BASENAME=testbench
 __jit_pypy_with:
 	mkdir -p tmp/withjit
-	mkdir -p build; cd build
-	$(PYPY2) $(RPYTHON) -c --opt=jit $(SOURCE)/log_jit_pypy.py
+	mkdir -p build
+	cd build; $(PYPY2) $(RPYTHON) -c --opt=jit $(SOURCE)/log_jit_pypy.py
 	cd -
 
 __jit_pypy_without: export PYPY_USESSION_DIR=$(PWD)/tmp/withoutjit
 __jit_pypy_without: export PYPY_USESSION_BASENAME=testbench
 __jit_pypy_without:
 	mkdir -p tmp/withoutjit
-	mkdir -p build; cd build
-	$(PYPY2) $(RPYTHON) -c --opt=jit --no-pyjitpl $(SOURCE)/log_jit_pypy.py
-	cd -
+	mkdir -p build
+	cd build; $(PYPY2) $(RPYTHON) -c --opt=jit --no-pyjitpl $(SOURCE)/log_jit_pypy.py
 
 diff: __jit_pypy_with __jit_pypy_without
 
@@ -59,9 +54,8 @@ clear_diff:
 
 play_log: export PYPYLOG=jit-backend-dump:jit-backend.dump
 play_log: log_jit_pypy 
-	mkdir -p build; cd build
-	./log_jit_pypy-c $(CODE)/mandel.b
-	cd -
+	mkdir -p build
+	cd build; ./log_jit_pypy-c $(CODE)/mandel.b
 
 viewcode: export PYTHONPATH=$(PWD)/../pypy
 viewcode: play_log
@@ -77,23 +71,20 @@ funcall:
 
 viewcode_withfun: export PYTHONPATH=$(PYPY_DIR)
 viewcode_withfun: play_hellofun
-	$(PYPY2) $(RPYTHON_DIR)/jit/backend/tool/viewcode.py ./build/l.log	
+	$(PYPY2) $(RPYTHON_DIR)/jit/backend/tool/viewcode.py ./build/jit-backend.dump
 
 play_hellofun: export PYTHONPATH=$(PYPY_DIR)
 play_hellofun: export PYPYLOG=jit-backend-dump:jit-backend.dump
 play_hellofun: fun_jit_pypy
-	mkdir -p build; cd build
-	./fun_jit_pypy-c $(CODE)/hello.b
-	cd -
+	mkdir -p build
+	cd build; ./fun_jit_pypy-c $(CODE)/hello.b
 
 play_hellofun_alone: export PYPYLOG=jit-backend-dump:jit-backend.dump
 play_hellofun_alone:
-	mkdir -p build; cd build
-	./fun_jit_pypy-c $(CODE)/hello.b
-	cd -
+	mkdir -p build
+	cd build ./fun_jit_pypy-c $(CODE)/hello.b
 
 fun_jit_pypy:
-	mkdir -p build; cd build
-	$(PYPY2) $(RPYTHON) --opt=jit $(SOURCE)/fun_jit_pypy.py
-	cd -
+	mkdir -p build
+	cd build; $(PYPY2) $(RPYTHON) --opt=jit $(SOURCE)/fun_jit_pypy.py
 
