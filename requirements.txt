@@ -1,0 +1,3 @@
+# pakcages needed to use RPython viewcode tool
+py
+pygame

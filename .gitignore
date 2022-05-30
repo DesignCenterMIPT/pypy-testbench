@@ -1,4 +1,5 @@
 /build
+/pypy2-dist
 /source/__pycahce__
 *.log
 *.o

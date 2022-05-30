@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# install required system packages
+sudo apt update > /dev/null
+sudo apt install -y python3 gcc mercurial
+
+# obtain pypy2.7 from pypy.org and setup minimal state as RPython is made for python 2.7
+# NOTE: this is needed due to system pypy package is blocked on pip installation on Ubuntu
+#       but pypy-pip package in missing to follow the rules.
+
+wget -q https://downloads.python.org/pypy/pypy2.7-v7.3.9-linux64.tar.bz2
+tar xjf pypy2.7-v7.3.9-linux64.tar.bz2 && rm -f pypy2.7-v7.3.9-linux64.tar.bz2
+mv pypy2.7-v7.3.9-linux64 pypy2-dist
+
+# install pip
+pypy2-dist/bin/pypy -m ensurepip
+
+# install required packages
+pypy2-dist/bin/pypy -m pip install -r requirements.txt
+
+# create system symbolic link for pypy2
+sudo ln -sf `pwd`/pypy2-dist/bin/pypy2.7 /usr/local/bin/pypy2.7
+
+# check for rpython avaliability and warn user if not found
+# as it depends of main project submodule so it might be not set up yet.
+[[ ! -f `pwd`/../pypy/rpython/bin/rpython ]] && \
+  echo "WARNING: Rpython binary was not found, make sure to setup main project's pypy submodule before you start!"
