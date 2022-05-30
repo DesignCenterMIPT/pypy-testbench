@@ -1,6 +1,6 @@
 PTHON=python3
 PYPY=pypy
-PYPY3=pypy3
+PYPY3=pypy3.9
 SOURCE=source
 CODE=brainfuck
 RPYTHON_DIR=$(PWD)/../pypy/rpython
