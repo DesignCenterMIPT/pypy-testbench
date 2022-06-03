@@ -6,3 +6,5 @@
 *.so
 /tmp
 *.pyc
+/.vscode
+*.dump
