@@ -72,6 +72,9 @@ def mainloop(program, bracket_map):
 		elif code == "w":
 			tape.printVal()
 
+		elif code == "c":
+			tape.cfun()
+
 		pc += 1
 
 @specialize.memo()
@@ -99,6 +102,34 @@ func_int_void = lltype.Ptr(lltype.FuncType([], lltype.Signed))
 
 IntStruct = lltype.Struct('MyInt', ('Int', lltype.Signed))
 func_void_MyInt = lltype.Ptr(lltype.FuncType([lltype.Ptr(IntStruct)], lltype.Void))
+
+# Add C-func that
+from rpython.rtyper.lltypesystem import rffi # lltype 
+from rpython.translator.tool.cbuild import ExternalCompilationInfo
+
+info = ExternalCompilationInfo(
+	includes=['/home/psifi/psifi/workspace/projects/pypy-testbench/c-fun/fun.h'],
+	include_dirs=['/home/psifi/psifi/workspace/projects/pypy-testbench/c-fun'],
+	separate_module_files=['/home/psifi/psifi/workspace/projects/pypy-testbench/c-fun/fun.c']
+    #libraries=[], 
+)
+        
+# void fun(void)
+cHello = rffi.llexternal(
+    "hello", [rffi.lltype.Void], rffi.lltype.Void, compilation_info=info
+)
+# void fun(int)
+cPrintInt = rffi.llexternal(
+    "printInt", [rffi.lltype.Signed], rffi.lltype.Void, compilation_info=info
+)
+# int fun(int)
+cReturnInt  = rffi.llexternal(
+    "printInt", [rffi.lltype.Signed], rffi.lltype.Signed, compilation_info=info
+)
+# int fun(int, int, int)
+cReturnSum = rffi.llexternal(
+    "returnSum", [rffi.lltype.Signed, rffi.lltype.Signed], rffi.lltype.Signed, compilation_info=info
+)
 
 class Tape(object):
 	def func_caller(self):
@@ -146,6 +177,11 @@ class Tape(object):
 		self.printer(self.position)
 	def printVal(self):
 		self.printer(self.return42Func())
+	def cfun(self):
+		cHello()
+		#cPrintInt(5)
+		#cPrintInt(cReturnInt(10))
+		#cPrintInt(cReturnSum(10, 20))
 
 def parse(program):
 	parsed = []
@@ -153,7 +189,7 @@ def parse(program):
 	leftstack = []
 	pc = 0
 	for char in program:
-		if char in ('[', ']', '<', '>', '+', '-', ',', '.', 'h', 'p', 'w'):
+		if char in ('[', ']', '<', '>', '+', '-', ',', '.', 'h', 'p', 'w', 'c'):
 			parsed.append(char)
 
 			if char == '[':
