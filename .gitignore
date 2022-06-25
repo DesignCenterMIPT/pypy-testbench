@@ -7,4 +7,4 @@
 /tmp
 *.pyc
 /.vscode
-*.dump
+**.dump
