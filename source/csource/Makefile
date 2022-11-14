@@ -1,3 +1,3 @@
 all:
-	gcc hello.c -fPIC -c
-	gcc hello.o -shared -o hlib.so 
+	gcc try_catch.c -fPIC -c
+	gcc try_catch.o -shared -o try_catch.so 

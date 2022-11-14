@@ -108,9 +108,9 @@ from rpython.rtyper.lltypesystem import rffi # lltype
 from rpython.translator.tool.cbuild import ExternalCompilationInfo
 
 info = ExternalCompilationInfo(
-	includes=['/home/psifi/psifi/workspace/projects/pypy-testbench/c-fun/fun.h'],
-	include_dirs=['/home/psifi/psifi/workspace/projects/pypy-testbench/c-fun'],
-	separate_module_files=['/home/psifi/psifi/workspace/projects/pypy-testbench/c-fun/fun.c']
+	includes=['/home/molotkov/workspace/projects/pyhuawei/pypy-testbench/c-fun/fun.h'],
+	include_dirs=['/home/molotkov/workspace/projects/pyhuawei/pypy-testbench/c-fun'],
+	separate_module_files=['/home/molotkov/workspace/projects/pyhuawei/pypy-testbench/c-fun/fun.c']
     #libraries=[], 
 )
         
@@ -129,6 +129,26 @@ cReturnInt  = rffi.llexternal(
 # int fun(int, int, int)
 cReturnSum = rffi.llexternal(
     "returnSum", [rffi.lltype.Signed, rffi.lltype.Signed], rffi.lltype.Signed, compilation_info=info
+)
+
+exception_new_point = rffi.llexternal(
+    "exception_new_point", [rffi.lltype.Void], rffi.lltype.Void, compilation_info=info
+)
+
+exception_delete = rffi.llexternal(
+    "exception_delete", [rffi.lltype.Void], rffi.lltype.Void, compilation_info=info
+)
+
+try_catch = rffi.llexternal(
+    "try_catch", [rffi.lltype.Void], rffi.lltype.Signed, compilation_info=info
+)
+
+try_catch_end = rffi.llexternal(
+    "try_catch_end", [rffi.lltype.Void], rffi.lltype.Void, compilation_info=info
+)
+
+throw = rffi.llexternal(
+    "throw", [rffi.lltype.Void], rffi.lltype.Void, compilation_info=info
 )
 
 class Tape(object):
