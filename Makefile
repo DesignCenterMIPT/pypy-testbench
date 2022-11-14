@@ -74,7 +74,6 @@ viewcode_withfun: play_hellofun
 	$(PYPY2) $(RPYTHON_DIR)/jit/backend/tool/viewcode.py ./build/jit-backend.dump
 
 play_hellofun: export PYTHONPATH=$(PYPY_DIR)
-play_hellofun: export PYPYLOG=jit-backend-dump:jit-backend.dump
 play_hellofun: fun_jit_pypy
 	mkdir -p build
 	cd build; ./fun_jit_pypy-c $(CODE)/hello.b
@@ -86,5 +85,11 @@ play_hellofun_alone:
 
 fun_jit_pypy:
 	mkdir -p build
-	cd build; $(PYPY2) $(RPYTHON) --opt=jit $(SOURCE)/fun_jit_pypy.py
+	cd build; $(PYPY2) $(RPYTHON) --opt=2 $(SOURCE)/fun_jit_pypy.py
 
+try_except: export PYPY_USESSION_DIR=$(PWD)/tmp/try_except
+try_except: 
+	mkdir -p tmp/try_except
+	mkdir -p build
+	cd build; $(PYPY2) $(RPYTHON) -c --opt=2 $(SOURCE)/try_except.py
+	cd build; ./try_except-c $(CODE)/first_brainfuck.b

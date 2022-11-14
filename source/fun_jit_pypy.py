@@ -1,3 +1,4 @@
+#from functools import cache
 import sys
 import py
 import os
@@ -71,6 +72,12 @@ def mainloop(program, bracket_map):
 
 		elif code == "w":
 			tape.printVal()
+
+		elif code == "t":
+			try:
+				2 + 2
+			except BaseException:
+				print("[wrong]")
 
 		pc += 1
 
@@ -153,7 +160,7 @@ def parse(program):
 	leftstack = []
 	pc = 0
 	for char in program:
-		if char in ('[', ']', '<', '>', '+', '-', ',', '.', 'h', 'p', 'w'):
+		if char in ('[', ']', '<', '>', '+', '-', ',', '.', 'h', 'p', 'w', 't' ):
 			parsed.append(char)
 
 			if char == '[':
