@@ -96,9 +96,20 @@ def return_caller(func):
 		return call_external_function(func)
 	return func_exec
 
-initfunctype = lltype.Ptr(lltype.FuncType([], lltype.Void))
+func_void_to_void = lltype.Ptr(lltype.FuncType([], lltype.Void))
 
-func_int_void = lltype.Ptr(lltype.FuncType([], lltype.Signed))
+func_void_to_int = lltype.Ptr(lltype.FuncType([], lltype.Signed))
+
+######
+#subStuct = lltype.GcStruct('uint', ('value', lltype.Unsigned))
+exaptionStruct = lltype.GcStruct('exception_t', ('size', lltype.Unsigned), ('array', lltype.Unsigned))
+
+func_exaption_to_void = lltype.Ptr(lltype.FuncType([lltype.Ptr(exaptionStruct)], lltype.Void))
+func_exaption_to_int = lltype.Ptr(lltype.FuncType([lltype.Ptr(exaptionStruct)], lltype.Signed))
+func_void_to_exaption = lltype.Ptr(lltype.FuncType([lltype.Void], lltype.Ptr(exaptionStruct)))
+func_jmp_buf_to_int = lltype.Ptr(lltype.FuncType([lltype.Unsigned], lltype.Signed))
+#exp = ['size':0, 'array':, ]	
+######
 
 IntStruct = lltype.Struct('MyInt', ('Int', lltype.Signed))
 func_void_MyInt = lltype.Ptr(lltype.FuncType([lltype.Ptr(IntStruct)], lltype.Void))
@@ -131,26 +142,6 @@ cReturnSum = rffi.llexternal(
     "returnSum", [rffi.lltype.Signed, rffi.lltype.Signed], rffi.lltype.Signed, compilation_info=info
 )
 
-exception_new_point = rffi.llexternal(
-    "exception_new_point", [rffi.lltype.Void], rffi.lltype.Void, compilation_info=info
-)
-
-exception_delete = rffi.llexternal(
-    "exception_delete", [rffi.lltype.Void], rffi.lltype.Void, compilation_info=info
-)
-
-try_catch = rffi.llexternal(
-    "try_catch", [rffi.lltype.Void], rffi.lltype.Signed, compilation_info=info
-)
-
-try_catch_end = rffi.llexternal(
-    "try_catch_end", [rffi.lltype.Void], rffi.lltype.Void, compilation_info=info
-)
-
-throw = rffi.llexternal(
-    "throw", [rffi.lltype.Void], rffi.lltype.Void, compilation_info=info
-)
-
 class Tape(object):
 	def func_caller(self):
 		self.helloFunc()
@@ -168,15 +159,44 @@ class Tape(object):
 		lltype.free(ll_libname, flavor='raw')
 
 		initptr = rdynload.dlsym(self.dll, 'hello')
-		self.helloFunc = rffi.cast(initfunctype, initptr)
+		self.helloFunc = rffi.cast(func_void_to_void, initptr)
 
 		printptr = rdynload.dlsym(self.dll, 'printMyInt')
 		self.printMyInt = rffi.cast(func_void_MyInt, printptr)
 
 		rptr = rdynload.dlsym(self.dll, 'return42')
-		self.return42Func = rffi.cast(func_int_void, rptr)
+		self.return42Func = rffi.cast(func_void_to_int, rptr)
 		
+		########
+		ll_libname = rffi.str2charp('/home/molotkov/workspace/projects/pyhuawei/pypy-testbench/c-fun/hlib.so')
+		self.dll2 = rdynload.dlopen(ll_libname, rdynload._dlopen_default_mode())
+		lltype.free(ll_libname, flavor='raw')
 
+		#exception_new = rdynload.dlsym(self.dll2, 'exception_new')
+		#self.exception_new = rffi.cast(func_void_to_exaption, exception_new)
+
+		exception_init = rdynload.dlsym(self.dll2, 'exception_init')
+		self.exception_init = rffi.cast(func_exaption_to_void, exception_init)
+
+		exception_new_point = rdynload.dlsym(self.dll2, 'exception_new_point')
+		self.exception_new_point = rffi.cast(func_exaption_to_void, exception_new_point)
+
+		exception_delete = rdynload.dlsym(self.dll2, 'exception_delete')
+		self.exception_delete = rffi.cast(func_exaption_to_void, exception_delete)
+
+		try_catch = rdynload.dlsym(self.dll2, 'try_catch')
+		self.try_catch = rffi.cast(func_exaption_to_int, try_catch)
+
+		try_catch_end = rdynload.dlsym(self.dll2, 'try_catch_end')
+		self.try_catch_end = rffi.cast(func_exaption_to_void, try_catch_end)
+
+		throw = rdynload.dlsym(self.dll2, 'throw')
+		self.throw = rffi.cast(func_exaption_to_int, throw)
+
+		setjmp = rdynload.dlsym(self.dll2, 'setjmp')
+		self.setjmp = rffi.cast(func_jmp_buf_to_int, setjmp)
+
+		########
 	def get(self):
 		return self.thetape[self.position]
 	def set(self, val):
@@ -198,10 +218,26 @@ class Tape(object):
 	def printVal(self):
 		self.printer(self.return42Func())
 	def cfun(self):
-		cHello()
+		#cHello()
 		#cPrintInt(5)
 		#cPrintInt(cReturnInt(10))
 		#cPrintInt(cReturnSum(10, 20))
+		exp = lltype.malloc(exaptionStruct)
+		#print(exp.array)
+		#exp = self.exception_new()
+		self.exception_init(exp)
+		#print(exp.array)
+		self.exception_new_point(exp)
+		print("1:try_catch start")
+
+		a = self.try_catch(exp)
+		if a != 0:
+			print("3:catch section")
+		else:
+			print("2:Throw")
+			self.throw(exp)
+			print("ERROR:Baaaaaaaaaad")
+		self.try_catch_end(exp)
 
 def parse(program):
 	parsed = []
@@ -225,7 +261,7 @@ def parse(program):
 
 def run(fp):
 	program_contents = ""
-	while True:
+	while True:	
 		read = os.read(fp, 4096)
 		if len(read) == 0:
 			break

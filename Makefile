@@ -84,7 +84,11 @@ play_hellofun_alone:
 	mkdir -p build
 	cd build ./fun_jit_pypy-c $(CODE)/hello.b
 
-fun_jit_pypy:
+fun_jit_pypy: export PYPY_USESSION_DIR=$(PWD)/tmp/fun_jit_pypy
+fun_jit_pypy: clib
 	mkdir -p build
+	mkdir -p tmp/fun_jit_pypy
 	cd build; $(PYPY2) $(RPYTHON) --opt=jit $(SOURCE)/fun_jit_pypy.py
 
+clib:
+	cd c-fun; make
