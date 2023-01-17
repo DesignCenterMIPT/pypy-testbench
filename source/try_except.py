@@ -13,6 +13,9 @@ jitdriver = JitDriver(greens=['pc', 'program', 'bracket_map'], reds=['tape'])
 
 @purefunction
 def get_matching_bracket(bracket_map, pc):
+    if pc > 100:
+        print "pc > 100"
+        raise ValueError("pc > 100")
     return bracket_map[pc]
 
 def mainloop(program, bracket_map):
@@ -37,9 +40,16 @@ def mainloop(program, bracket_map):
                     print "TypeError raised"
             except RuntimeError as er:
                 print "## count ==", count, "##" 
+            except ValueError as vr:
+                print "value error in mainloop -> '['"
+                raise vr
 
         elif code == "]" and tape.get() != 0:
-            pc = get_matching_bracket(bracket_map, pc)
+            try:
+                pc = get_matching_bracket(bracket_map, pc)
+            except ValueError as vr:
+                print "value error in mainloop -> ']'"
+                raise vr
 
         pc += 1
         count += 1
@@ -94,7 +104,10 @@ def run(fp):
         program_contents += read
     os.close(fp)
     program, bm = parse(program_contents)
-    mainloop(program, bm)
+    try:
+        mainloop(program, bm)
+    except ValueError:
+        print "value error in run"
 
 def entry_point(argv):
     try:
