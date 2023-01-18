@@ -1,6 +1,8 @@
 import os
 import sys
 
+s = ""
+
 try:
     from rpython.rlib.jit import JitDriver, purefunction
 except ImportError:
@@ -11,12 +13,28 @@ except ImportError:
 
 jitdriver = JitDriver(greens=['pc', 'program', 'bracket_map'], reds=['tape'])
 
-@purefunction
+#@purefunction
 def get_matching_bracket(bracket_map, pc):
-    if pc > 100:
-        print "pc > 100"
-        raise ValueError("pc > 100")
+
+    try:
+        check_pc(pc)
+    except ValueError:
+        print "get_matching_bracket: p > 100 \n"
+        s = "get_matching_bracket: p > 100 \n"
     return bracket_map[pc]
+
+def make_throw_100():
+    raise ValueError
+
+def check_pc(pc):
+
+    try:
+        if pc > 100:
+            make_throw_100()
+    except ValueError as ve:
+        print "check_pc: p > 100 \n"
+        s = "check_pc: p > 100 \n"
+        raise ve
 
 def mainloop(program, bracket_map):
     pc = 0
@@ -40,17 +58,9 @@ def mainloop(program, bracket_map):
                     print "TypeError raised"
             except RuntimeError as er:
                 print "## count ==", count, "##" 
-            except ValueError as vr:
-                print "value error in mainloop -> '['"
-                raise vr
 
         elif code == "]" and tape.get() != 0:
-            try:
-                pc = get_matching_bracket(bracket_map, pc)
-            except ValueError as vr:
-                print "value error in mainloop -> ']'"
-                raise vr
-
+            pc = get_matching_bracket(bracket_map, pc)
         pc += 1
         count += 1
 
