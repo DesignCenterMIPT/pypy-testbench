@@ -91,5 +91,5 @@ try_except: export PYPY_USESSION_DIR=$(PWD)/tmp/try_except
 try_except: 
 	mkdir -p tmp/try_except
 	mkdir -p build
-	cd build; $(PYPY2) $(RPYTHON) -c --opt=2 $(SOURCE)/try_except.py
+	cd build; $(PYPY2) $(RPYTHON) -c --opt=0 $(SOURCE)/try_except.py
 	cd build; ./try_except-c $(CODE)/first_brainfuck.b
