@@ -13,14 +13,19 @@ except ImportError:
 
 jitdriver = JitDriver(greens=['pc', 'program', 'bracket_map'], reds=['tape'])
 
+def print_on_file_p(string):
+    file = open("p.log", "w")
+    file.write(string)
+    file.close()
+    return 0;
+
 #@purefunction
 def get_matching_bracket(bracket_map, pc):
 
     try:
         check_pc(pc)
     except ValueError:
-        print "get_matching_bracket: p > 100 \n"
-        s = "get_matching_bracket: p > 100 \n"
+        print_on_file_p("get_matching_bracket: p > 100 \n")
     return bracket_map[pc]
 
 def make_throw_100():
@@ -32,8 +37,7 @@ def check_pc(pc):
         if pc > 100:
             make_throw_100()
     except ValueError as ve:
-        print "check_pc: p > 100 \n"
-        s = "check_pc: p > 100 \n"
+        print_on_file_p("check_pc: p > 100 \n")
         raise ve
 
 def mainloop(program, bracket_map):
