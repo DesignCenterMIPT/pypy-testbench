@@ -14,30 +14,28 @@ except ImportError:
 jitdriver = JitDriver(greens=['pc', 'program', 'bracket_map'], reds=['tape'])
 
 def print_on_file_p(string):
-    file = open("p.log", "w")
+    file = open("p.log", "a")
     file.write(string)
     file.close()
-    return 0;
+    return 0
 
 #@purefunction
 def get_matching_bracket(bracket_map, pc):
-
     try:
         check_pc(pc)
     except ValueError:
-        print_on_file_p("get_matching_bracket: p > 100 \n")
+        print_on_file_p("get_matching_bracket: p > 100\n")
     return bracket_map[pc]
 
 def make_throw_100():
     raise ValueError
 
 def check_pc(pc):
-
     try:
         if pc > 100:
             make_throw_100()
     except ValueError as ve:
-        print_on_file_p("check_pc: p > 100 \n")
+        print_on_file_p("check_pc: p > 100\n")
         raise ve
 
 def mainloop(program, bracket_map):
@@ -61,7 +59,7 @@ def mainloop(program, bracket_map):
                 except TypeError:
                     print "TypeError raised"
             except RuntimeError as er:
-                print "## count ==", count, "##" 
+                print_on_file_p("## count ==" + str(count) + "##\n")
 
         elif code == "]" and tape.get() != 0:
             pc = get_matching_bracket(bracket_map, pc)
@@ -111,6 +109,9 @@ def parse(program):
 
 def run(fp):
     program_contents = ""
+    # init empty outout file
+    file = open("p.log", "w")
+    file.close()
     while True:
         read = os.read(fp, 4096)
         if len(read) == 0:
