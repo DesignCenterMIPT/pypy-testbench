@@ -34,10 +34,25 @@ def make_throw_100():
     
     raise ValueError
 
+def lvl1_fake_function():
+    lvl2_fake_function()
+
+def lvl2_fake_function():
+    lvl3_fake_function()
+
+def lvl3_fake_function():
+    lvl4_fake_function()
+
+def lvl4_fake_function():
+    lvl5_fake_function()
+
+def lvl5_fake_function():
+    make_throw_100()
+
 def check_pc(pc):
     try:
         if pc > 100:
-            make_throw_100()
+            lvl1_fake_function()
     except ValueError as ve:
         print_on_file_p("check_pc: p > 100\n")
         raise ve
