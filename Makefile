@@ -3,6 +3,7 @@ PYPY2=pypy2.7
 PYPY3=pypy3.9
 SOURCE=$(PWD)/source
 CODE=$(PWD)/brainfuck
+#PYPY_DIR=$(PWD)/../pypy-native
 PYPY_DIR=$(PWD)/../pypy
 RPYTHON_DIR=$(PYPY_DIR)/rpython
 RPYTHON=$(RPYTHON_DIR)/bin/rpython
@@ -91,5 +92,12 @@ try_except: export PYPY_USESSION_DIR=$(PWD)/tmp/try_except
 try_except: 
 	mkdir -p tmp/try_except
 	mkdir -p build
-	cd build; $(PYPY2) $(RPYTHON) -c --opt=0 $(SOURCE)/try_except.py
-	cd build; ./try_except-c $(CODE)/first_brainfuck.b
+	cd build; $(PYPY2) $(RPYTHON) -c --opt=2 --gc=incminimark $(SOURCE)/try_except.py
+	cd build; ./try_except-c $(CODE)/first_brainfuck.b > $(SOURCE)/../out.log
+
+try_except_mod: export PYPY_USESSION_DIR=$(PWD)/tmp/try_except_mod
+try_except_mod: 
+	mkdir -p tmp/try_except_mod
+	mkdir -p build
+	cd build; $(PYPY2) $(RPYTHON) -c --opt=2 --gc=incminimark $(SOURCE)/try_except_mod.py
+	cd build; ./try_except_mod-c $(CODE)/first_brainfuck.b > $(SOURCE)/../out.log
