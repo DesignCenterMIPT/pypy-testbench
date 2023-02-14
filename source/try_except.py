@@ -11,7 +11,7 @@ except ImportError:
         def jit_merge_point(self,**kw): pass
         def can_enter_jit(self,**kw): pass
 
-jitdriver = JitDriver(greens=['pc', 'program', 'bracket_map'], reds=['tape'])
+jitdriver = JitDriver(greens=['pc', 'count', 'program', 'bracket_map'], reds=['tape'])
 
 def print_on_file_p(string):
     file = open("p.log", "a")
@@ -45,7 +45,7 @@ def mainloop(program, bracket_map):
     while pc < len(program):
         jitdriver.jit_merge_point(pc=pc, 
 				tape=tape, program=program,
-        		bracket_map=bracket_map)
+        		bracket_map=bracket_map, count=count)
 
         code = program[pc]
         if code == "[" and tape.get() == 0:
