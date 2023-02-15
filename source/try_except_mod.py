@@ -21,8 +21,9 @@ def print_on_file_p(string):
 
 #@purefunction
 def get_matching_bracket(bracket_map, pc):
+    value = 0;
     try:
-        check_pc(pc)
+        value = check_pc(pc)
     except ValueError:
         print_on_file_p("get_matching_bracket: p > 100\n")
     return bracket_map[pc]
@@ -31,28 +32,49 @@ def make_throw_100():
     m = 0;
     for i in range(1000000):
         m += i;
-    
     raise ValueError
+    return 1
 
-def lvl1_fake_function():
-    lvl2_fake_function()
+class LvLinserter:
+    def __init__(self):
+        self.count = 0;
 
-def lvl2_fake_function():
-    lvl3_fake_function()
+    def lvl1_fake_function(self):
+        for i in range(1000):
+            self.count = self.count + 1
+            if i > 100:
+                self.lvl2_fake_function()
 
-def lvl3_fake_function():
-    lvl4_fake_function()
+    def lvl2_fake_function(self):
+        for i in range(1000):
+            self.count = self.count + 2 
+            if i > 200:    
+                self.lvl3_fake_function()
 
-def lvl4_fake_function():
-    lvl5_fake_function()
+    def lvl3_fake_function(self):
+        for i in range(1000):
+            self.count = self.count + 3 
+            if i > 300:
+                self.lvl4_fake_function()
 
-def lvl5_fake_function():
-    make_throw_100()
+    def lvl4_fake_function(self):
+        for i in range(1000):
+            self.count = self.count + 4 
+            if i > 400:
+                self.lvl5_fake_function()
+
+    def lvl5_fake_function(self):
+        if self.count > 0:
+            for i in range(1000):
+                self.count = self.count + 5 
+                if i > 500:
+                    make_throw_100();
 
 def check_pc(pc):
+    lvl = LvLinserter()
     try:
         if pc > 100:
-            lvl1_fake_function()
+            return lvl.lvl1_fake_function()
     except ValueError as ve:
         print_on_file_p("check_pc: p > 100\n")
         raise ve
